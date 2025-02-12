@@ -1,20 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
-package toribioej_it13b_activities;
-
-/**
- *
- * @author User
- */
-public class ToribioEJ_IT13B_activities {
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        // TODO code application logic here
+public class Lab_act1_Arithmetics {
+    public static void main(String[] args){
+        
+        int first_number = 10;
+        int second_number = 4;
+        int third_number = 6;
+        int x = 3;
+        
+        System.out.println(first_number + " * " + second_number + " + " + third_number + " = " + (first_number * second_number + third_number));
+        System.out.println((first_number + " - " + second_number) + " % " + third_number + " = " + ((first_number - second_number) % third_number));
+        System.out.println((first_number + " + " + second_number + " + " + third_number) + " / " + x + " = " + ((first_number + second_number + third_number)/ x));
+        System.out.println(first_number + " * " + third_number + " - " + (second_number + " * " + second_number) +  " = " + (first_number * third_number + (second_number * second_number)));
     }
-    
 }
