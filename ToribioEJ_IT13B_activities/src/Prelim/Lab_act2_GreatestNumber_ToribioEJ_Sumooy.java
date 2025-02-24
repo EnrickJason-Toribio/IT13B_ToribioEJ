@@ -30,4 +30,5 @@ public class Lab_act2_GreatestNumber_ToribioEJ_Sumooy {
     }
        System.out.println("The greatest number is: " + greatest_number);
 }
+        
 }
