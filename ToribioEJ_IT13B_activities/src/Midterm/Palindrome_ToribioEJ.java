@@ -1,9 +1,9 @@
-package Prelim;
+package Midterm;
 
 import java.util.Scanner;
 
 public class Palindrome_ToribioEJ {
-    public static void main(String[] args){
+        public static void main(String[] args){
         
         String word;
       
