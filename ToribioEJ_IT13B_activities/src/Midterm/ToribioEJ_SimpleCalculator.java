@@ -32,14 +32,14 @@ public class ToribioEJ_SimpleCalculator {
         System.out.println("Divide = /");
         
         System.out.print("Enter your choice: ");
-        char choice = in.next().charAt(0);
+        char operator = in.next().charAt(0);
         
         System.out.print("Enter second number: ");
         float y = in.nextFloat();
 
         float result = 0;
 
-        switch (choice) {
+        switch (operator) {
             case '+':
                 result = add(x, y);
                 System.out.println("Result = " + result);
