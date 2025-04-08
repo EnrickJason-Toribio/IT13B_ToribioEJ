@@ -55,29 +55,28 @@ public class ToribioEJ_EncryptFileHandling {
 //    }
     
     
+    
+    public static void main(String[] args) throws IOException {
+        String encryptedMessage;
 
-public static char encryptMessage(char chars) {
-        return (char)(chars + 6);
-    }
-
-    public static void main(String[] args) {
-        String input = "C:\\Users\\Jayboy\\Desktop\\java programs\\ToribioEJ_input.txt";
-        String encrypted = "C:\\Users\\Jayboy\\Desktop\\java programs\\ToribioEJ_encrypted.txt";
-
-        try (
-            FileReader fr = new FileReader(input);
-            FileWriter fw = new FileWriter(encrypted)
-        ) {
-            int data;
-            while ((data = fr.read()) != -1) {
-                char chars = (char) data;
-                fw.write(encryptMessage(chars)); // encrypt and write character
-            }
-
-            System.out.println("Encrypted message to: " + encrypted);
-
-        } catch (IOException e) {
-            System.out.println("An error occurred: " + e.getMessage());
+        try (FileWriter myfile = new FileWriter("C:\\Users\\Jayboy\\Desktop\\java programs\\ToribioEJ_encrypted.txt")) {
+            int key = 6;
+            String message = "I love you!\nGwapa ko!\nBuotan si Ma'am";
+            encryptedMessage = encryptMessage(message, key);
+            myfile.write(encryptedMessage);
         }
+        System.out.println("Encrypted Message:");
+        System.out.println(encryptedMessage);
     }
+
+    public static String encryptMessage(String message, int key) {
+        char[] chars = message.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] != '\n') {
+                chars[i] += key;
+            }
+        }
+        return new String(chars);
+    }
+    
 }
