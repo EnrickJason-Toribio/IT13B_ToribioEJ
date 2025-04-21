@@ -1,18 +1,13 @@
 package Midterm;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 public class ToribioEJ_Group_MidtermProject {
+
     static final String username_password = "C:\\Users\\Jayboy\\Desktop\\java programs\\Account_encrypted.txt";
     static final int SHIFT = 3;
     static Scanner scanner = new Scanner(System.in);
-
-    static String[] menu = {"Classic Buffalo Wings", "Barbecue Chicken Wings", "Honey Mustard Wings"};
-    static int[] prices = {189, 199, 209};
 
     public static void main(String[] args) {
         int choice;
@@ -21,31 +16,34 @@ public class ToribioEJ_Group_MidtermProject {
             System.out.println("1. Create an account");
             System.out.println("2. Login");
             System.out.println("3. Exit");
-            System.out.print("Enter choice: ");
-            choice = scanner.nextInt();
-            scanner.nextLine();
+            System.out.print("Enter your choice: ");
+            choice = Integer.parseInt(scanner.nextLine());
 
             switch (choice) {
-                case 1: register(); 
-                break;
-                
-                case 2: login(); 
-                break;
-                
-                case 3: System.out.println("Thank you. Goodbye!"); 
-                break;
-                default: System.out.println("Invalid choice.");
+                case 1:
+                    createAccount();
+                    break;
+                case 2:
+                    if (login()) {
+                        orderMenu();
+                    }
+                    break;
+                case 3:
+                    System.out.println("Thank you! Goodbye.");
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
             }
         } while (choice != 3);
     }
 
-    static void register() {
+    static void createAccount() {
         try {
             System.out.print("Enter Username: ");
             String username = scanner.nextLine();
             System.out.print("Enter Password: ");
             String password = scanner.nextLine();
-            String encryptedPassword = caesarEncrypt(password);
+            String encryptedPassword = encrypt(password);
 
             FileWriter writer = new FileWriter(username_password, true);
             writer.write(username + "," + encryptedPassword + "\n");
@@ -53,106 +51,96 @@ public class ToribioEJ_Group_MidtermProject {
 
             System.out.println("Account created successfully!");
         } catch (IOException e) {
-            System.out.println("Error during registration.");
+            System.out.println("Error while creating account: " + e.getMessage());
         }
     }
 
-    static void login() {
+    static boolean login() {
         try {
             System.out.print("Enter Username: ");
-            String inputUser = scanner.nextLine();
+            String username = scanner.nextLine();
             System.out.print("Enter Password: ");
-            String inputPass = scanner.nextLine();
+            String password = scanner.nextLine();
 
             File file = new File(username_password);
             if (!file.exists()) {
-                System.out.println("No users registered yet.");
-                return;
+                System.out.println("No user data found. Please register first.");
+                return false;
             }
 
-            FileReader user_pass = new FileReader(file);
-            StringBuilder content = new StringBuilder();
-            int ch;
-            while ((ch = user_pass.read()) != -1) {
-                content.append((char) ch);
-            }
-            user_pass.close();
-
-            String[] lines = content.toString().split("\n");
-            boolean found = false;
-            for (String line : lines) {
-                if (line.trim().isEmpty()) continue;
+            Scanner fileScanner = new Scanner(new FileReader(username_password));
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
                 String[] parts = line.split(",");
-                if (parts.length != 2) continue;
-                String storedUsername = parts[0];
-                String storedEncryptedPassword = parts[1];
-                String decryptedPassword = caesarDecrypt(storedEncryptedPassword);
+                if (parts.length == 2) {
+                    String storedUser = parts[0];
+                    String storedPass = decrypt(parts[1]);
 
-                if (storedUsername.equals(inputUser) && decryptedPassword.equals(inputPass)) {
-                    System.out.println("Login successful!");
-                    orderMenu();
-                    found = true;
-                    break;
+                    if (username.equals(storedUser) && password.equals(storedPass)) {
+                        System.out.println("Login successful! Welcome " + username);
+                        fileScanner.close();
+                        return true;
+                    }
                 }
             }
-
-            if (!found) {
-                System.out.println("Invalid credentials.");
-            }
+            fileScanner.close();
+            System.out.println("Login failed. Invalid username or password.");
         } catch (IOException e) {
-            System.out.println("Error during login.");
+            System.out.println("Error during login: " + e.getMessage());
         }
+        return false;
     }
 
     static void orderMenu() {
-        int[] quantities = new int[menu.length];
-        int choice;
+        String[] items = {"Classic Buffalo Wings", "Barbecue Chicken Wings", "Honey Mustard Wings"};
+        double[] prices = {189, 199, 209};
+        int[] quantities = new int[3];
 
+        int option;
         do {
-            System.out.println("\n PakPak All U Can Menu ");
-            for (int i = 0; i < menu.length; i++) {
-                System.out.printf("%d. %s - P%d\n", i + 1, menu[i], prices[i]);
+            System.out.println("\n Pakpak All U Can Menu ");
+            for (int i = 0; i < items.length; i++) {
+                System.out.println((i + 1) + ". " + items[i] + " - P" + prices[i]);
             }
             System.out.println("4. Exit and Show Bill");
-            System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();
+            System.out.print("Choose an item: ");
+            option = Integer.parseInt(scanner.nextLine());
 
-            if (choice >= 1 && choice <= 3) {
-                System.out.print("Enter quantity for " + menu[choice - 1] + ": ");
-                int qty = scanner.nextInt();
-                quantities[choice - 1] += qty;
-                System.out.println("Added to order.");
-            } else if (choice != 4) {
-                System.out.println("Invalid choice.");
+            if (option >= 1 && option <= 3) {
+                System.out.print("Enter quantity for " + items[option - 1] + ": ");
+                int qty = Integer.parseInt(scanner.nextLine());
+                quantities[option - 1] += qty;
+                System.out.println(qty + " " + items[option - 1] + "(s) added.");
+            } else if (option != 4) {
+                System.out.println("Invalid option. Try again.");
             }
-        } while (choice != 4);
+        } while (option != 4);
 
-        // Show summary
-        int total = 0;
         System.out.println("\n Order Summary ");
-        for (int i = 0; i < menu.length; i++) {
+        double total = 0;
+        for (int i = 0; i < items.length; i++) {
             if (quantities[i] > 0) {
-                int itemTotal = quantities[i] * prices[i];
+                double itemTotal = prices[i] * quantities[i];
+                System.out.println(items[i] + " x " + quantities[i] + " = P" + String.format("%.2f", itemTotal));
                 total += itemTotal;
-                System.out.printf("%s x%d = P%d\n", menu[i], quantities[i], itemTotal);
             }
         }
-        System.out.println("Total Bill: P" + total);
+        System.out.println("Total Bill: P" + String.format("%.2f", total));
     }
 
-    static String caesarEncrypt(String text) {
-        StringBuilder result = new StringBuilder();
+    static String encrypt(String text) {
+        StringBuilder encrypted = new StringBuilder();
         for (char c : text.toCharArray()) {
-            result.append((char) (c + SHIFT));
+            encrypted.append((char) (c + SHIFT));
         }
-        return result.toString();
+        return encrypted.toString();
     }
 
-    static String caesarDecrypt(String text) {
-        StringBuilder result = new StringBuilder();
+    static String decrypt(String text) {
+        StringBuilder decrypted = new StringBuilder();
         for (char c : text.toCharArray()) {
-            result.append((char) (c - SHIFT));
+            decrypted.append((char) (c - SHIFT));
         }
-        return result.toString();
+        return decrypted.toString();
     }
 }
