@@ -71,12 +71,12 @@ public class ToribioEJ_Group_MidtermProject {
             Scanner fileScanner = new Scanner(new FileReader(username_password));
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
-                String[] parts = line.split(",");
-                if (parts.length == 2) {
-                    String storedUser = parts[0];
-                    String storedPass = decrypt(parts[1]);
+                String[] account = line.split(",");
+                if (account.length == 2) {
+                    String Username = account[0];
+                    String Password = decrypt(account[1]);
 
-                    if (username.equals(storedUser) && password.equals(storedPass)) {
+                    if (username.equals(Username) && password.equals(Password)) {
                         System.out.println("Login successful! Welcome " + username);
                         fileScanner.close();
                         return true;
@@ -120,9 +120,9 @@ public class ToribioEJ_Group_MidtermProject {
         double total = 0;
         for (int i = 0; i < items.length; i++) {
             if (quantities[i] > 0) {
-                double itemTotal = prices[i] * quantities[i];
-                System.out.println(items[i] + " x " + quantities[i] + " = P" + String.format("%.2f", itemTotal));
-                total += itemTotal;
+                double TotalBill = prices[i] * quantities[i];
+                System.out.println(items[i] + " x " + quantities[i] + " = P" + String.format("%.2f", TotalBill));
+                total += TotalBill;
             }
         }
         System.out.println("Total Bill: P" + String.format("%.2f", total));
@@ -130,16 +130,16 @@ public class ToribioEJ_Group_MidtermProject {
 
     static String encrypt(String text) {
         StringBuilder encrypted = new StringBuilder();
-        for (char c : text.toCharArray()) {
-            encrypted.append((char) (c + SHIFT));
+        for (char x : text.toCharArray()) {
+            encrypted.append((char) (x + SHIFT));
         }
         return encrypted.toString();
     }
 
     static String decrypt(String text) {
         StringBuilder decrypted = new StringBuilder();
-        for (char c : text.toCharArray()) {
-            decrypted.append((char) (c - SHIFT));
+        for (char x : text.toCharArray()) {
+            decrypted.append((char) (x - SHIFT));
         }
         return decrypted.toString();
     }
